@@ -11,5 +11,5 @@ install:
 
 script:
         - curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s latest
-#        - go install -v ./pkg/device42/getPass.go
+        - go get -t -v ./...
         - go build -v ./cmd/d42-password/main.go
