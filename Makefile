@@ -9,6 +9,7 @@ BINARY_UNIX=$(BINARY_NAME)_unix
     
 all: build
 build: 
+	$(GOBUILD) -x -v pkg/device42/*.go
 	$(GOBUILD) -o $(BINARY_NAME) -v cmd/d42-password/main.go
 test: 
 	$(GOTEST) -v ./...
