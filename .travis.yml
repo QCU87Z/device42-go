@@ -1,0 +1,15 @@
+language: go
+
+go:
+        - 1.12
+
+git:
+        depth: 1
+
+install:
+        - go get github.com/qcu87z/device42-go/pkg/device42
+
+script:
+        - curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s latest
+        - go get -t -v ./...
+        - go build -v ./cmd/d42-password/main.go
