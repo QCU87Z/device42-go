@@ -7,7 +7,7 @@ GOGET=$(GOCMD) get
 BINARY_NAME=d42-password
 BINARY_UNIX=$(BINARY_NAME)_unix
     
-all: test build
+all: build
 build: 
 	$(GOBUILD) -o $(BINARY_NAME) -v cmd/d42-password/main.go
 test: 
