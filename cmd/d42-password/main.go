@@ -3,7 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"github.com/qcu87z/device42-go/pkg/device42"
+	"github.com/QCU87Z/device42-go/pkg/device42"
 	"log"
 	"os"
 	"strconv"
