@@ -35,21 +35,23 @@ type Password struct {
 	Offset int `json:"offset"`
 }
 
-const baseURL string = "https://10.11.12.239/api/1.0"
+//const baseURL string = "https://10.11.12.239/api/1.0"
 
 type Client struct {
+	baseURL string
 	Username string
 	Password string
 }
 
-func NewBasicAuthClient(username, password string) *Client {
+func NewBasicAuthClient(url, username, password string) *Client {
 	return &Client{
+		url,
 		username,
 		password,
 	}
 }
 
-func (s *Client) doRequest(req *http.Request) ([]byte, error) {
+func (s *Client) DoRequest(req *http.Request) ([]byte, error) {
 	defaultTransport := http.DefaultTransport.(*http.Transport)
 
 	// Create new Transport that ignores self-signed SSL
@@ -82,12 +84,12 @@ func (s *Client) doRequest(req *http.Request) ([]byte, error) {
 }
 
 func (s *Client) GetPasswordById(id int) (*Password, error) {
-	url := fmt.Sprintf(baseURL+"/passwords/?id=%d&plain_text=yes", id)
+	url := fmt.Sprintf(s.baseURL+"/passwords/?id=%d&plain_text=yes", id)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
 	}
-	bytes, err := s.doRequest(req)
+	bytes, err := s.DoRequest(req)
 	if err != nil {
 		return nil, err
 	}
@@ -101,12 +103,12 @@ func (s *Client) GetPasswordById(id int) (*Password, error) {
 }
 
 func (s *Client) GetPasswordByDevice(device string) (*Password, error) {
-	url := fmt.Sprintf(baseURL+"/passwords/?device=%s&plain_text=yes", device)
+	url := fmt.Sprintf(s.baseURL+"/passwords/?device=%s&plain_text=yes", device)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
 	}
-	bytes, err := s.doRequest(req)
+	bytes, err := s.DoRequest(req)
 	if err != nil {
 		return nil, err
 	}
