@@ -42,8 +42,6 @@ type Password struct {
 	Password string
 }
 
-//const baseURL string = "https://10.11.12.239/api/1.0"
-
 type Client struct {
 	baseURL string
 	Username string
@@ -122,42 +120,4 @@ func(s *Client) GetNewPasswordsByName(device string) ([]Password, error) {
 	}
 	return p, nil
 
-}
-
-func (s *Client) GetPasswordById(id int) (*PasswordAPI, error) {
-	url := fmt.Sprintf(s.baseURL+"/passwords/?id=%d&plain_text=yes", id)
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, err
-	}
-	bytes, err := s.DoRequest(req)
-	if err != nil {
-		return nil, err
-	}
-	var data PasswordAPI
-	err = json.Unmarshal(bytes, &data)
-	if err != nil {
-		return nil, err
-	}
-	//fmt.Println(string(bytes))
-	return &data, nil
-}
-
-func (s *Client) GetPasswordByDevice(device string) (*PasswordAPI, error) {
-	url := fmt.Sprintf(s.baseURL+"/passwords/?device=%s&plain_text=yes", device)
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, err
-	}
-	bytes, err := s.DoRequest(req)
-	if err != nil {
-		return nil, err
-	}
-	var data PasswordAPI
-	err = json.Unmarshal(bytes, &data)
-	if err != nil {
-		return nil, err
-	}
-	//fmt.Println(string(bytes))
-	return &data, nil
 }

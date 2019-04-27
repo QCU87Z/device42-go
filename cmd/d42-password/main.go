@@ -13,6 +13,7 @@ import (
 const apiURL = "https://10.11.12.239/api/1.0"
 
 func main() {
+	//TODO Add an auth component
 	mm := mainMenu()
 	for {
 		err := mm.Run()
