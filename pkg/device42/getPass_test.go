@@ -86,7 +86,7 @@ func TestClient_DoRequest(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	var data Password
+	var data PasswordAPI
 	err = json.Unmarshal(bytes, &data)
 	if err != nil {
 		t.Error(err)

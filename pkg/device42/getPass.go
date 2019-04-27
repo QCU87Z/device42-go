@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-type Password struct {
+type PasswordAPI struct {
 	TotalCount int `json:"total_count"`
 	Passwords  []struct {
 		Username       string        `json:"username"`
@@ -33,6 +33,13 @@ type Password struct {
 	} `json:"Passwords"`
 	Limit  int `json:"limit"`
 	Offset int `json:"offset"`
+}
+
+type Password struct {
+	Username	string
+	ID	int
+	Label string
+	Password string
 }
 
 //const baseURL string = "https://10.11.12.239/api/1.0"
@@ -83,26 +90,17 @@ func (s *Client) DoRequest(req *http.Request) ([]byte, error) {
 	return body, nil
 }
 
-func (s *Client) GetPasswordById(id int) (*Password, error) {
-	url := fmt.Sprintf(s.baseURL+"/passwords/?id=%d&plain_text=yes", id)
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, err
+func passwordAPItoPassword(api PasswordAPI) []Password {
+	var p []Password
+	for _, pass := range api.Passwords {
+		p1 := Password{pass.Username, pass.ID, pass.Label, pass.Password}
+		p = append(p, p1)
 	}
-	bytes, err := s.DoRequest(req)
-	if err != nil {
-		return nil, err
-	}
-	var data Password
-	err = json.Unmarshal(bytes, &data)
-	if err != nil {
-		return nil, err
-	}
-	//fmt.Println(string(bytes))
-	return &data, nil
+
+	return p
 }
 
-func (s *Client) GetPasswordByDevice(device string) (*Password, error) {
+func(s *Client) GetNewPasswordsByName(device string) ([]Password, error) {
 	url := fmt.Sprintf(s.baseURL+"/passwords/?device=%s&plain_text=yes", device)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -112,7 +110,50 @@ func (s *Client) GetPasswordByDevice(device string) (*Password, error) {
 	if err != nil {
 		return nil, err
 	}
-	var data Password
+	var data PasswordAPI
+	err = json.Unmarshal(bytes, &data)
+	if err != nil {
+		return nil, err
+	}
+	//fmt.Println(string(bytes))
+	p := passwordAPItoPassword(data)
+	if len(p) == 0 {
+		return nil, fmt.Errorf("password return length is: %d",len(p))
+	}
+	return p, nil
+
+}
+
+func (s *Client) GetPasswordById(id int) (*PasswordAPI, error) {
+	url := fmt.Sprintf(s.baseURL+"/passwords/?id=%d&plain_text=yes", id)
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+	bytes, err := s.DoRequest(req)
+	if err != nil {
+		return nil, err
+	}
+	var data PasswordAPI
+	err = json.Unmarshal(bytes, &data)
+	if err != nil {
+		return nil, err
+	}
+	//fmt.Println(string(bytes))
+	return &data, nil
+}
+
+func (s *Client) GetPasswordByDevice(device string) (*PasswordAPI, error) {
+	url := fmt.Sprintf(s.baseURL+"/passwords/?device=%s&plain_text=yes", device)
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
+	}
+	bytes, err := s.DoRequest(req)
+	if err != nil {
+		return nil, err
+	}
+	var data PasswordAPI
 	err = json.Unmarshal(bytes, &data)
 	if err != nil {
 		return nil, err
